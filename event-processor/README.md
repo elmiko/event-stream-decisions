@@ -19,9 +19,9 @@ using business rules.
        -p APPLICATION_NAME=event-processor \
        -p GIT_URI=https://github.com/elmiko/event-stream-decisions \
        -p CONTEXT_DIR=event-processor \
-       -p APP_MAIN_CLASS=io.radanalytics.eventstreamdecisions.App \
+       -p APP_FILE=eventstreamdecisions-1.0-SNAPSHOT.jar \
        -p SPARK_OPTIONS='--packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0 --conf spark.jars.ivy=/tmp/.ivy2' \
-       -e KAFKA_BROKERS=apache-kafka:9092 \
+       -e KAFKA_BROKERS=kafka:9092 \
        -e KAFKA_IN_TOPIC=topic1 \
        -e KAFKA_OUT_TOPIC=topic2
    ```
