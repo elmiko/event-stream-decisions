@@ -68,7 +68,10 @@ public class App {
             .load()
             .select(functions.column("value").cast(DataTypes.StringType).alias("value"))
             .select(functions.from_json(functions.column("value"), event_msg_struct).alias("json"))
-            .selectExpr("eventfunc(json.event_id, json.event_type, json.user_id) as value");
+            .select(functions.callUDF("eventfunc",
+                                     functions.column("json.event_id"),
+                                     functions.column("json.event_type"),
+                                     functions.column("json.user_id")).alias("value"));
 
         /* configure the output stream */
         StreamingQuery writer = records
