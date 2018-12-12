@@ -17,7 +17,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.spark.sql.*;
-import org.apache.spark.sql.expressions.UserDefinedFunction;
+import org.apache.spark.sql.api.java.UDF3;
 import org.apache.spark.sql.streaming.StreamingQuery;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
@@ -54,8 +54,9 @@ public class App {
             .appName("KafkaSparkOpenShiftJava")
             .getOrCreate();
 
-        spark.udf().register("eventfunc", (String userId) -> {
-            return userId;
+        /* register a user defined function to operate on events */
+        spark.udf().register("eventfunc", (String eventId, String eventType, Integer userId) -> {
+            return eventId;
         }, DataTypes.StringType);
 
         /* configure the operations to read the input topic */
@@ -67,7 +68,7 @@ public class App {
             .load()
             .select(functions.column("value").cast(DataTypes.StringType).alias("value"))
             .select(functions.from_json(functions.column("value"), event_msg_struct).alias("json"))
-            .selectExpr("eventfunc(json.event_id) as value");
+            .selectExpr("eventfunc(json.event_id, json.event_type, json.user_id) as value");
 
         /* configure the output stream */
         StreamingQuery writer = records
