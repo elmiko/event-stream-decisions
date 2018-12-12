@@ -10,7 +10,7 @@ public class Event implements Serializable
     private Integer userId;
     private String eventType;
     private String eventId;
-    private String nextEvent;
+    private String nextEvent = "default_next_event";
 
     /**
      *
