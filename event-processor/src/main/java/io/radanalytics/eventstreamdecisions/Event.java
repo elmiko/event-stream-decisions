@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class Event implements Serializable
 {
-    private Integer customerAccountNumber;
+    private String customerAccountNumber;
     private String customerGeo;
     private String eventId;
     private String eventDate;
@@ -18,9 +18,9 @@ public class Event implements Serializable
 
     /**
      *
-     * @return Integer
+     * @return String
      */
-    public Integer getCustomerAccountNumber() {
+    public String getCustomerAccountNumber() {
         return customerAccountNumber;
     }
 
@@ -84,7 +84,7 @@ public class Event implements Serializable
      *
      * @param customerAccountNumber
      */
-    public void setCustomerAccountNumber(Integer customerAccountNumber) {
+    public void setCustomerAccountNumber(String customerAccountNumber) {
         this.customerAccountNumber = customerAccountNumber;
     }
 
@@ -142,11 +142,6 @@ public class Event implements Serializable
      */
     public void setNextEvent(String nextEvent) {
         this.nextEvent = nextEvent;
-    }
-
-    public String toString() {
-        String ret = "category=" + this.eventCategory + ", next=" + this.nextEvent;
-        return ret;
     }
 }
 

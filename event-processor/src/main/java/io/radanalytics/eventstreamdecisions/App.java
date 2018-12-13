@@ -50,7 +50,7 @@ public class App {
         }
 
         StructType event_msg_struct = new StructType()
-           /* .add("customeraccountnumber", DataTypes.IntegerType)*/
+            .add("customeraccountnumber", DataTypes.StringType)
             .add("customerGeo", DataTypes.StringType)
             .add("eventId", DataTypes.StringType)
             .add("eventDate", DataTypes.StringType)
@@ -70,11 +70,10 @@ public class App {
         Broadcast<KieBase> broadcastRules = sc.broadcast(rules);
 
         /* register a user defined function to apply rules on events */
-        //spark.udf().register("eventfunc", (Integer custNum, String custGeo, String eventId, String eventDate, String eventCat, String eventVal, String eventSrc) -> {
-        spark.udf().register("eventfunc", (String custGeo, String eventId, String eventDate, String eventCat, String eventVal, String eventSrc) -> {
+        spark.udf().register("eventfunc", (String custNum, String custGeo, String eventId, String eventDate, String eventCat, String eventVal, String eventSrc) -> {
             StatelessKieSession session = broadcastRules.value().newStatelessKieSession();
             Event e = new Event();
-            /*e.setCustomerAccountNumber(custNum);*/
+            e.setCustomerAccountNumber(custNum);
             e.setCustomerGeo(custGeo);
             e.setEventId(eventId);
             e.setEventDate(eventDate);
@@ -95,7 +94,7 @@ public class App {
             .select(functions.column("value").cast(DataTypes.StringType).alias("value"))
             .select(functions.from_json(functions.column("value"), event_msg_struct).alias("json"))
             .select(functions.callUDF("eventfunc",
-                               /*    functions.column("json.customeraccountnumber"),*/
+                                     functions.column("json.customerAccountNumber"),
                                      functions.column("json.customerGeo"),
                                      functions.column("json.eventId"),
                                      functions.column("json.eventDate"),
