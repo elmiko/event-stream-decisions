@@ -25,14 +25,14 @@ EVENT_TEMPLATES = [
 ]
 
 def generate_event():
-    
-    ret = {
-        'customerAccountNumber': random.randint(1000000000000, 9000000000000),
-        'customerGeo': 'EST',
-        'eventId': str(uuid.uuid4()),
-        'eventDate': datetime.datetime.now().isoformat(),
-    }
-    ret.update(EVENT_TEMPLATES[random.randint(0, 10)])
+    #ret = {
+    #    'customerAccountNumber': random.randint(1000000000000, 9000000000000),
+    #    'customerGeo': 'EST',
+    #    'eventId': str(uuid.uuid4()),
+    #    'eventDate': datetime.datetime.now().isoformat(),
+    #}
+    #ret.update(EVENT_TEMPLATES[random.randint(0, 10)])
+    ret = EVENT_TEMPLATES[random.randint(0, 10)]
     return ret
 
 

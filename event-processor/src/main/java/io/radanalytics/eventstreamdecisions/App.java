@@ -50,13 +50,13 @@ public class App {
         }
 
         StructType event_msg_struct = new StructType()
-            .add("customeraccountnumber", DataTypes.IntegerType)
+           /* .add("customeraccountnumber", DataTypes.IntegerType)
             .add("customergeo", DataTypes.StringType)
             .add("eventid", DataTypes.StringType)
-            .add("eventdate", DataTypes.StringType)
-            .add("eventcategory", DataTypes.StringType)
-            .add("eventvalue", DataTypes.StringType)
-            .add("eventsource", DataTypes.StringType);
+            .add("eventdate", DataTypes.StringType)*/
+            .add("eventCategory", DataTypes.StringType)
+            .add("eventValue", DataTypes.StringType)
+            .add("eventSource", DataTypes.StringType);
 
         /* acquire a SparkSession object */
         SparkSession spark = SparkSession
@@ -70,19 +70,18 @@ public class App {
         Broadcast<KieBase> broadcastRules = sc.broadcast(rules);
 
         /* register a user defined function to apply rules on events */
-        spark.udf().register("eventfunc", (Integer custNum, String custGeo, String eventId, String eventDate, String eventCat, String eventVal, String eventSrc) -> {
-            System.out.println("geo=" + custGeo + ", id=" + eventId + ", date=" + eventDate + ", cat=" + eventCat + ", val=" + eventVal + ", src=" + eventSrc);
+        //spark.udf().register("eventfunc", (Integer custNum, String custGeo, String eventId, String eventDate, String eventCat, String eventVal, String eventSrc) -> {
+        spark.udf().register("eventfunc", (String eventCat, String eventVal, String eventSrc) -> {
             StatelessKieSession session = broadcastRules.value().newStatelessKieSession();
             Event e = new Event();
-            e.setCustomerAccountNumber(custNum);
+            /*e.setCustomerAccountNumber(custNum);
             e.setCustomerGeo(custGeo);
             e.setEventId(eventId);
-            e.setEventDate(eventDate);
+            e.setEventDate(eventDate);*/
             e.setEventCategory(eventCat);
             e.setEventValue(eventVal);
             e.setEventSource(eventSrc);
             session.execute(CommandFactory.newInsert(e));
-            System.out.print(e);
             return e.getNextEvent();
         }, DataTypes.StringType);
 
@@ -96,10 +95,10 @@ public class App {
             .select(functions.column("value").cast(DataTypes.StringType).alias("value"))
             .select(functions.from_json(functions.column("value"), event_msg_struct).alias("json"))
             .select(functions.callUDF("eventfunc",
-                                     functions.column("json.customeraccountnumber"),
+                               /*    functions.column("json.customeraccountnumber"),
                                      functions.column("json.customergeo"),
                                      functions.column("json.eventid"),
-                                     functions.column("json.eventdate"),
+                                     functions.column("json.eventdate"),*/
                                      functions.column("json.eventcategory"),
                                      functions.column("json.eventvalue"),
                                      functions.column("json.eventsource")).alias("value"));
