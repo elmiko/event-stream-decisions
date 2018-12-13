@@ -50,13 +50,13 @@ public class App {
         }
 
         StructType event_msg_struct = new StructType()
-            .add("customerAccountNumber", DataTypes.IntegerType)
-            .add("customerGeo", DataTypes.StringType)
-            .add("eventId", DataTypes.StringType)
-            .add("eventDate", DataTypes.StringType)
-            .add("eventCategory", DataTypes.StringType)
-            .add("eventValue", DataTypes.StringType)
-            .add("eventSource", DataTypes.StringType);
+            .add("customeraccountnumber", DataTypes.IntegerType)
+            .add("customergeo", DataTypes.StringType)
+            .add("eventid", DataTypes.StringType)
+            .add("eventdate", DataTypes.StringType)
+            .add("eventcategory", DataTypes.StringType)
+            .add("eventvalue", DataTypes.StringType)
+            .add("eventsource", DataTypes.StringType);
 
         /* acquire a SparkSession object */
         SparkSession spark = SparkSession
@@ -96,13 +96,13 @@ public class App {
             .select(functions.column("value").cast(DataTypes.StringType).alias("value"))
             .select(functions.from_json(functions.column("value"), event_msg_struct).alias("json"))
             .select(functions.callUDF("eventfunc",
-                                     functions.column("json.customerAccountNumber"),
-                                     functions.column("json.customerGeo"),
-                                     functions.column("json.eventId"),
-                                     functions.column("json.eventDate"),
-                                     functions.column("json.eventCategory"),
-                                     functions.column("json.eventValue"),
-                                     functions.column("json.eventSource")).alias("value"));
+                                     functions.column("json.customeraccountnumber"),
+                                     functions.column("json.customergeo"),
+                                     functions.column("json.eventid"),
+                                     functions.column("json.eventdate"),
+                                     functions.column("json.eventcategory"),
+                                     functions.column("json.eventvalue"),
+                                     functions.column("json.eventsource")).alias("value"));
 
         /* configure the output stream */
         StreamingQuery writer = records
