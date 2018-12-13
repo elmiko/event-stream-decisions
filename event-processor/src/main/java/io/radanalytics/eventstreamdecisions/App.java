@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.spark.api.java.JavaSparkContext;
@@ -49,6 +50,7 @@ public class App {
             System.exit(1);
         }
 
+        /* setup the schema for our messages */
         StructType event_msg_struct = new StructType()
             .add("customeraccountnumber", DataTypes.StringType)
             .add("customerGeo", DataTypes.StringType)
@@ -72,6 +74,9 @@ public class App {
         /* register a user defined function to apply rules on events */
         spark.udf().register("eventfunc", (String custNum, String custGeo, String eventId, String eventDate, String eventCat, String eventVal, String eventSrc) -> {
             StatelessKieSession session = broadcastRules.value().newStatelessKieSession();
+            /* create a random "confidence" score to be used by some rules */
+            Random rnd = new Random();
+            int cnf = rnd.nextInt(101); /* want a range between 0-100 */
             Event e = new Event();
             e.setCustomerAccountNumber(custNum);
             e.setCustomerGeo(custGeo);
@@ -80,6 +85,7 @@ public class App {
             e.setEventCategory(eventCat);
             e.setEventValue(eventVal);
             e.setEventSource(eventSrc);
+            e.setConfidence(cnf);
             session.execute(CommandFactory.newInsert(e));
             return e.getNextEvent();
         }, DataTypes.StringType);

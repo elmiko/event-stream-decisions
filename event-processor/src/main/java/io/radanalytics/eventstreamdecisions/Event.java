@@ -15,6 +15,7 @@ public class Event implements Serializable
     private String eventValue;
     private String eventSource;
     private String nextEvent = "DEFAULT_NEXT_ACTION";
+    private int confidence;
 
     /**
      *
@@ -82,6 +83,14 @@ public class Event implements Serializable
 
     /**
      *
+     * @return int
+     */
+    public int getConfidence() {
+        return confidence;
+    }
+
+    /**
+     *
      * @param customerAccountNumber
      */
     public void setCustomerAccountNumber(String customerAccountNumber) {
@@ -134,6 +143,14 @@ public class Event implements Serializable
      */
     public void setEventSource(String eventSource) {
         this.eventSource = eventSource;
+    }
+
+    /**
+     *
+     * @param confidence
+     */
+    public void setConfidence(int confidence) {
+        this.confidence = confidence;
     }
 
     /**
