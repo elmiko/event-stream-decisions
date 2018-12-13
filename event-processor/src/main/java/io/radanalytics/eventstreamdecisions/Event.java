@@ -143,5 +143,10 @@ public class Event implements Serializable
     public void setNextEvent(String nextEvent) {
         this.nextEvent = nextEvent;
     }
+
+    public String toString() {
+        String ret = "category=" + this.eventCategory + ", next=" + this.nextEvent;
+        return ret;
+    }
 }
 

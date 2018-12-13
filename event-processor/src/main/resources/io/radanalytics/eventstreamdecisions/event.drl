@@ -2,6 +2,13 @@ package io.radanalytics.eventstreamdecisions;
 
 import io.radanalytics.eventstreamdecisions.Event;
 
+rule "CC Transaction"
+  when
+    e: Event(eventCategory == "CC_TRANSACTION")
+  then
+    e.setNextEvent("CC_PAYMENT_APPROVED");
+end
+
 rule "Late Payment Waiver"
   when
     e: Event(eventCategory == "CC_BALANCE_PAYMENT", eventValue == "LATE_PAYMENT")
@@ -14,13 +21,6 @@ rule "Balance Payment"
     e: Event(eventCategory == "CC_BALANCE_PAYMENT", eventValue == "MIN_DUE")
   then
     e.setNextEvent("CC_PAYMENT_RECEIVED");
-end
-
-rule "CC Transaction"
-  when
-    e: Event(eventCategory == "CC_TRANSACTION")
-  then
-    e.setNextEvent("CC_PAYMENT_APPROVED");
 end
 
 rule "Dispute Created"

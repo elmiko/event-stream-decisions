@@ -81,6 +81,7 @@ public class App {
             e.setEventValue(eventVal);
             e.setEventSource(eventSrc);
             session.execute(CommandFactory.newInsert(e));
+            System.out.print(e);
             return e.getNextEvent();
         }, DataTypes.StringType);
 
