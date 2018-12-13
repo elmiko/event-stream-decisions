@@ -41,6 +41,9 @@ the rules application is then broadcast onto a second topic.
 1. create a new project for the event-stream-decisions application. this
    helps to isolate the applications from the kafka deployment, if you prefer
    you can use the same project for all components.
+   ```
+   oc new-project events
+   ```
 
 1. install the radanalytics.io templates into the project. these templates
    are used to deploy apache spark along with the emitter-processor service.
