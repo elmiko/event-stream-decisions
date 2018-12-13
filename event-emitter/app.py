@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import json
 import logging
 import os
@@ -9,20 +10,29 @@ import uuid
 from kafka import KafkaProducer
 
 
-EVENTS = [
-    'event_type_1',
-    'event_type_2',
-    'event_type_3',
-    'event_type_4'
+EVENT_TEMPLATES = [
+        { "eventCategory": "CC_BALANCE_PAYMENT", "eventValue": "LATE_PAYMENT", "eventSource": "CUSTOMERCARE"},
+        { "eventCategory": "CC_BALANCE_PAYMENT", "eventValue": "MIN_DUE", "eventSource": "MOBLE"},
+        { "eventCategory": "CC_BALANCE_PAYMENT", "eventValue": "MIN_DUE", "eventSource": "WEBSITE"},
+        { "eventCategory": "CC_TRANSACTION", "eventValue": "AIRLINE_PURCHASE", "eventSource": "WEBSITE"},
+        { "eventCategory": "CC_TRANSACTION", "eventValue": "MERCHANT_PURCHASE", "eventSource": "POS"},
+        { "eventCategory": "CC_TRANSACTION", "eventValue": "HOTEL_PURCHASE", "eventSource": "POS"},
+        { "eventCategory": "CC_TRANSACTION", "eventValue": "ONLINE_PURCHASE", "eventSource": "WEBSITE"},
+        { "eventCategory": "DISPUTES", "eventValue": "CASE_CREATED", "eventSource": "IVR"},
+        { "eventCategory": "DISPUTES", "eventValue": "CASE_CLOSED", "eventSource": "IVR"},
+        { "eventCategory": "ONLINE_ACCOUNT", "eventValue": "PAYMENT_FAILURE", "eventSource": "CUSTOMERCARE"},
+        { "eventCategory": "ONLINE_ACCOUNT", "eventValue": "PAYMENT_SUCCESS", "eventSource": "CUSTOMERCARE"},
 ]
 
-
 def generate_event():
+    
     ret = {
-        'user_id': random.randint(1000, 2000),
-        'event_type': EVENTS[random.randint(0, 3)],
-        'event_id': str(uuid.uuid4())
+        'customerAccountNumber': random.randint(1000000000000, 9000000000000),
+        'customerGeo': 'EST',
+        'eventId': str(uuid.uuid4()),
+        'eventDate': datetime.datetime.now().isoformat(),
     }
+    ret.update(EVENT_TEMPLATES[random.randint(0, 10)])
     return ret
 
 

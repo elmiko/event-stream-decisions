@@ -50,9 +50,13 @@ public class App {
         }
 
         StructType event_msg_struct = new StructType()
-            .add("user_id", DataTypes.IntegerType)
-            .add("event_type", DataTypes.StringType)
-            .add("event_id", DataTypes.StringType);
+            .add("customerAccountNumber", DataTypes.IntegerType)
+            .add("customerGeo", DataTypes.StringType)
+            .add("eventId", DataTypes.StringType)
+            .add("eventDate", DataTypes.StringType)
+            .add("eventCategory", DataTypes.StringType)
+            .add("eventValue", DataTypes.StringType)
+            .add("eventSource", DataTypes.StringType);
 
         /* acquire a SparkSession object */
         SparkSession spark = SparkSession
@@ -66,12 +70,16 @@ public class App {
         Broadcast<KieBase> broadcastRules = sc.broadcast(rules);
 
         /* register a user defined function to apply rules on events */
-        spark.udf().register("eventfunc", (String eventId, String eventType, Integer userId) -> {
+        spark.udf().register("eventfunc", (Integer custNum, String custGeo, String eventId, String eventDate, String eventCat, String eventVal, String eventSrc) -> {
             StatelessKieSession session = broadcastRules.value().newStatelessKieSession();
             Event e = new Event();
+            e.setCustomerAccountNumber(custNum);
+            e.setCustomerGeo(custGeo);
             e.setEventId(eventId);
-            e.setEventType(eventType);
-            e.setUserId(userId);
+            e.setEventDate(eventDate);
+            e.setEventCategory(eventCat);
+            e.setEventValue(eventVal);
+            e.setEventSource(eventSrc);
             session.execute(CommandFactory.newInsert(e));
             return e.getNextEvent();
         }, DataTypes.StringType);
@@ -86,9 +94,13 @@ public class App {
             .select(functions.column("value").cast(DataTypes.StringType).alias("value"))
             .select(functions.from_json(functions.column("value"), event_msg_struct).alias("json"))
             .select(functions.callUDF("eventfunc",
-                                     functions.column("json.event_id"),
-                                     functions.column("json.event_type"),
-                                     functions.column("json.user_id")).alias("value"));
+                                     functions.column("json.customerAccountNumber"),
+                                     functions.column("json.customerGeo"),
+                                     functions.column("json.eventId"),
+                                     functions.column("json.eventDate"),
+                                     functions.column("json.eventCatgeory"),
+                                     functions.column("json.eventValue"),
+                                     functions.column("json.eventSource")).alias("value"));
 
         /* configure the output stream */
         StreamingQuery writer = records
