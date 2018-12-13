@@ -4,7 +4,7 @@ import io.radanalytics.eventstreamdecisions.Event;
 
 rule "Late Payment Waiver"
   when
-    e: Event(eventCategory == "CC_BALANCE_PAYMENT" && eventValue == "LATE_PAYMENT")
+    e: Event(eventCategory == "CC_BALANCE_PAYMENT", eventValue == "LATE_PAYMENT")
   then
     e.setNextEvent("LATE_PAYMENT_WAIVER");
 end
