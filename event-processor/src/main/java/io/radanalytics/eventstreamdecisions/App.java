@@ -71,6 +71,7 @@ public class App {
 
         /* register a user defined function to apply rules on events */
         spark.udf().register("eventfunc", (Integer custNum, String custGeo, String eventId, String eventDate, String eventCat, String eventVal, String eventSrc) -> {
+            System.out.println("geo=" + custGeo + ", id=" + eventId + ", date=" + eventDate + ", cat=" + eventCat + ", val=" + eventVal + ", src=" + eventSrc);
             StatelessKieSession session = broadcastRules.value().newStatelessKieSession();
             Event e = new Event();
             e.setCustomerAccountNumber(custNum);
