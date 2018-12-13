@@ -8,3 +8,45 @@ rule "Late Payment Waiver"
   then
     e.setNextEvent("LATE_PAYMENT_WAIVER");
 end
+
+rule "Balance Payment"
+  when
+    e: Event(eventCategory == "CC_BALANCE_PAYMENT", eventValue == "MIN_DUE")
+  then
+    e.setNextEvent("CC_PAYMENT_RECEIVED");
+end
+
+rule "CC Transaction"
+  when
+    e: Event(eventCategory == "CC_TRANSACTION")
+  then
+    e.setNextEvent("CC_PAYMENT_APPROVED");
+end
+
+rule "Dispute Created"
+  when
+    e: Event(eventCategory == "DISPUTES", eventValue == "CASE_CREATED")
+  then
+    e.setNextEvent("DISPUTE_CASE_CREATED");
+end
+
+rule "Dispute Closed"
+  when
+    e: Event(eventCategory == "DISPUTES", eventValue == "CASE_CLOSED")
+  then
+    e.setNextEvent("DISPUTE_CASE_CLOSED");
+end
+
+rule "Online Payment Failed"
+  when
+    e: Event(eventCategory == "ONLINE_ACCOUNT", eventValue == "PAYMENT_FAILURE")
+  then
+    e.setNextEvent("ONLINE_PAYMENT_FAILURE");
+end
+
+rule "Online Payment Success"
+  when
+    e: Event(eventCategory == "ONLINE_ACCOUNT", eventValue == "PAYMENT_SUCCESS")
+  then
+    e.setNextEvent("ONLINE_PAYMENT_SUCCESS");
+end
