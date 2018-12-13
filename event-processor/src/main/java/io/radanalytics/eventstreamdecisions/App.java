@@ -98,7 +98,7 @@ public class App {
                                      functions.column("json.customerGeo"),
                                      functions.column("json.eventId"),
                                      functions.column("json.eventDate"),
-                                     functions.column("json.eventCatgeory"),
+                                     functions.column("json.eventCategory"),
                                      functions.column("json.eventValue"),
                                      functions.column("json.eventSource")).alias("value"));
 
