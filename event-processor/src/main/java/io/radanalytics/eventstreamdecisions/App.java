@@ -11,17 +11,15 @@ https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html
 package io.radanalytics.eventstreamdecisions;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Random;
-import java.util.Set;
 
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.streaming.StreamingQuery;
 import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.MapType;
 import org.apache.spark.sql.types.StructType;
 
 import org.kie.api.KieBase;
@@ -87,8 +85,11 @@ public class App {
             e.setEventSource(eventSrc);
             e.setConfidence(cnf);
             session.execute(CommandFactory.newInsert(e));
-            return e.getNextEvent();
-        }, DataTypes.StringType);
+            Map ret = new HashMap();
+            ret.put("eventId", eventId);
+            ret.put("nextEvent", e.getNextEvent());
+            return ret;
+        }, DataTypes.createMapType(DataTypes.StringType, DataTypes.StringType));
 
         /* configure the operations to read the input topic */
         Dataset<Row> records = spark
@@ -106,7 +107,8 @@ public class App {
                                      functions.column("json.eventDate"),
                                      functions.column("json.eventCategory"),
                                      functions.column("json.eventValue"),
-                                     functions.column("json.eventSource")).alias("value"));
+                                     functions.column("json.eventSource")).alias("value"))
+            .select(functions.to_json(functions.column("value")));
 
         /* configure the output stream */
         StreamingQuery writer = records
