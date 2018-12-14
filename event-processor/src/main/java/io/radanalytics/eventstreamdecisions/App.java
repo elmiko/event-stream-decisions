@@ -108,7 +108,7 @@ public class App {
                                      functions.column("json.eventCategory"),
                                      functions.column("json.eventValue"),
                                      functions.column("json.eventSource")).alias("value"))
-            .select(functions.to_json(functions.column("value")));
+            .select(functions.to_json(functions.column("value")).alias("value"));
 
         /* configure the output stream */
         StreamingQuery writer = records
