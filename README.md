@@ -29,7 +29,7 @@ the rules application is then broadcast onto a second topic.
    using the 0.1.0 release as it is lightweight and can be installed with
    minimal openshift privileges.
    ```
-   oc create -f https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/0.1.0/kafka-inmemory/resources/openshift-template.yaml
+   oc create -f https://raw.githubusercontent.com/elmiko/openshift-templates/master/strimzi/strimzi-0.1.0.yaml
    ```
 
 1. start apache kafka. this will launch the necessary components to start
